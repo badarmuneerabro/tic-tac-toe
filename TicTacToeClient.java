@@ -125,7 +125,6 @@ public class TicTacToeClient extends JFrame implements Runnable
 
 	private void processMessage(String message)
 	{
-		System.out.println("Message recieved: " + message);
 		// valid move occurred.
 
 		if(message.equals("Valid move."))
@@ -194,8 +193,6 @@ public class TicTacToeClient extends JFrame implements Runnable
 			output.format("%d\n", location); // send location to server.
 			output.flush();
 			myTurn = false;
-
-			System.out.println("Location send: " + location + "& myturn=" + myTurn);
 		} // end if
 	} // end method sendClickedSquare.
 
