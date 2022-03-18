@@ -177,49 +177,47 @@ public class TicTacToeServer extends JFrame
 	} // end method isOccupied.
 
 	// place code in this method to determine whether game over.
-	public boolean isGameOver()
+	public boolean isGameOver(int currentPlayer)
 	{
-		if(checkHorizontally())
+		if(checkHorizontally(currentPlayer))
 			return true;
-		else if(checkVertically())
-			return true;
-		else if(checkDiagonally())
-			return true;
-		else
-			return false;
-	}
 
-	private boolean checkHorizontally()
-	{
-		boolean isOver = true;
-		for(int i = 0; i < 7; i += 3)
-		{
-			for(int j = i + 1; j < i + 3; j++) // j = i + 1: makes the j to be checked from next to i.
-			{
-				if(!board[i].equals(board[j]))
-				{
-					isOver = false;
-					break;
-				}
-			}
-		}
-
+		boolean isOver = checkVertically(currentPlayer);
+		System.out.println("isOver?" + isOver);
 		return isOver;
 	}
 
-	private boolean checkVertically()
+	private boolean checkHorizontally(int currentPlayer)
 	{
-		boolean isOver = true;
+		boolean isGameOver = false;
 
-		for(int i = 0; i < 3; i++)
+		for(int i = 0; i < board.length; i+=3)
 		{
-			for(int j = i + 3; j < i + 7; j += 3 ) 
+			String mark = MARKS[currentPlayer];
+
+			if(mark.equals(board[i]) && board[i].equals(board[i+1]) && board[i].equals(board[i+2]))
 			{
-				if(!board[i].equals(board[j]))
-				{
-					isOver = false;
-					break;
-				}
+				isGameOver = true;
+				break;
+			}
+		}
+
+		return isGameOver;
+	}
+
+	private boolean checkVertically(int currentPlayer)
+	{
+		boolean isOver = false;
+		for(int i = 0; i < board.length/3; i++)
+		{
+			String mark = MARKS[currentPlayer];
+
+			System.out.println("board[" + i + "]="+ board[i] + ", board[" + (i+3) + "]=" + board[i + 3] + ", board[" + (i+6) + "]=" + board[i+6]);
+			
+			if(mark.equals(board[i]) && mark.equals(board[i + 3]) && mark.equals(board[i + 6]))
+			{
+				isOver = true;
+				break;
 			}
 		}
 
@@ -233,7 +231,7 @@ public class TicTacToeServer extends JFrame
 		if(board[0].equals(board[4]) && board[0].equals(board[8]))
 			isOver = true;
 
-		else if(board[2].equals(board[4]) && board[2].equals[board[6]])
+		else if(board[2].equals(board[4]) && board[2].equals(board[6]))
 			isOver = true;
 
 		return isOver;
@@ -317,8 +315,7 @@ public class TicTacToeServer extends JFrame
 					}
 
 
-					// send message that other player connected.
-
+					//send message that other player connected.
 					output.format("Other player connected. Your move.\n");
 					output.flush();
 				}
@@ -329,19 +326,25 @@ public class TicTacToeServer extends JFrame
 					output.flush();
 				} // end else.
 
-				while(!isGameOver())
+				boolean isGameOver = isGameOver(playerNumber);
+
+				while(!isGameOver)
 				{
 					int location = 0; //initialize move location.
 
 					if(input.hasNext())
 						location = input.nextInt(); // get move location.
 
-
 					// check for valid move.
 					if(validateAndMove(location, playerNumber))
 					{
 						displayMessage("\nlocation: " + location);
 						output.format("Valid move.\n"); // notify client.
+
+						isGameOver = isGameOver(playerNumber);
+						if(isGameOver)
+						output.format("You win");
+
 						output.flush();
 					} // end if
 
@@ -365,7 +368,7 @@ public class TicTacToeServer extends JFrame
 					System.exit(1);
 				}
 			}
-		} // end metho run
+		} // end method run
 
 
 		public void setSuspended(boolean status)
