@@ -181,10 +181,11 @@ public class TicTacToeServer extends JFrame
 	{
 		if(checkHorizontally(currentPlayer))
 			return true;
-
-		boolean isOver = checkVertically(currentPlayer);
-		System.out.println("isOver?" + isOver);
-		return isOver;
+		else if(checkVertically(currentPlayer))
+			return true;
+		else if(checkDiagonally(currentPlayer))
+			return true;
+		return false;
 	}
 
 	private boolean checkHorizontally(int currentPlayer)
@@ -211,8 +212,6 @@ public class TicTacToeServer extends JFrame
 		for(int i = 0; i < board.length/3; i++)
 		{
 			String mark = MARKS[currentPlayer];
-
-			System.out.println("board[" + i + "]="+ board[i] + ", board[" + (i+3) + "]=" + board[i + 3] + ", board[" + (i+6) + "]=" + board[i+6]);
 			
 			if(mark.equals(board[i]) && mark.equals(board[i + 3]) && mark.equals(board[i + 6]))
 			{
@@ -224,14 +223,15 @@ public class TicTacToeServer extends JFrame
 		return isOver;
 	}
 
-	private boolean checkDiagonally()
+	private boolean checkDiagonally(int currentPlayer)
 	{
 		boolean isOver = false;
 
-		if(board[0].equals(board[4]) && board[0].equals(board[8]))
+		String mark = MARKS[currentPlayer];
+		if(mark.equals(board[0]) && board[0].equals(board[4]) && board[4].equals(board[8]))
 			isOver = true;
 
-		else if(board[2].equals(board[4]) && board[2].equals(board[6]))
+		else if(mark.equals(board[2]) && board[2].equals(board[4]) && board[4].equals(board[6]))
 			isOver = true;
 
 		return isOver;
